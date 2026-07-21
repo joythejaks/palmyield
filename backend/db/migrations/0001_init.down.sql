@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS sync_batches;
+DROP TABLE IF EXISTS notifications;
+ALTER TABLE IF EXISTS deduction_transactions DROP CONSTRAINT IF EXISTS fk_deduction_transactions_payout_run_item;
+ALTER TABLE IF EXISTS harvest_records DROP CONSTRAINT IF EXISTS fk_harvest_records_payout_run_item;
+DROP TABLE IF EXISTS payout_run_items;
+DROP TABLE IF EXISTS payout_runs;
+DROP TABLE IF EXISTS deduction_transactions;
+DROP TABLE IF EXISTS deductions;
+DROP TABLE IF EXISTS harvest_records;
+DROP TABLE IF EXISTS price_references;
+DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS cooperatives;
