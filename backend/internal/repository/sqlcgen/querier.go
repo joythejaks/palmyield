@@ -11,10 +11,14 @@ import (
 )
 
 type Querier interface {
+	CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (RefreshToken, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	GetCooperative(ctx context.Context, id pgtype.UUID) (Cooperative, error)
+	GetRefreshTokenByHash(ctx context.Context, tokenHash string) (RefreshToken, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
+	GetUserByIdentifier(ctx context.Context, email pgtype.Text) (User, error)
+	RevokeRefreshToken(ctx context.Context, id pgtype.UUID) error
 	UpdateUserStatus(ctx context.Context, arg UpdateUserStatusParams) (User, error)
 }
 

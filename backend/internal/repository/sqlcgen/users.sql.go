@@ -91,6 +91,27 @@ func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	return i, err
 }
 
+const getUserByIdentifier = `-- name: GetUserByIdentifier :one
+SELECT id, cooperative_id, email, phone, password_hash, role, status, created_at FROM users
+WHERE email = $1 OR phone = $1
+`
+
+func (q *Queries) GetUserByIdentifier(ctx context.Context, email pgtype.Text) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByIdentifier, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CooperativeID,
+		&i.Email,
+		&i.Phone,
+		&i.PasswordHash,
+		&i.Role,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updateUserStatus = `-- name: UpdateUserStatus :one
 UPDATE users
 SET status = $2
