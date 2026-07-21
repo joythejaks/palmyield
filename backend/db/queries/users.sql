@@ -11,6 +11,10 @@ WHERE id = $1;
 SELECT * FROM users
 WHERE email = $1;
 
+-- name: GetUserByIdentifier :one
+SELECT * FROM users
+WHERE email = $1 OR phone = $1;
+
 -- name: UpdateUserStatus :one
 UPDATE users
 SET status = $2
