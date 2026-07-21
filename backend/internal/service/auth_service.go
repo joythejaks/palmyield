@@ -71,8 +71,15 @@ func (s *AuthService) Refresh(ctx context.Context, refreshToken string) (TokenPa
 	if stored.RevokedAt.Valid || stored.ExpiresAt.Time.Before(time.Now()) {
 		return TokenPair{}, ErrInvalidRefreshToken
 	}
-	if err := s.repo.RevokeRefreshToken(ctx, stored.ID); err != nil {
+	// Atomic compare-and-set: if a concurrent request already revoked this
+	// token between our SELECT and this UPDATE, rowsAffected is 0 and we
+	// reject rather than mint a second token pair from the same token.
+	rowsAffected, err := s.repo.RevokeRefreshToken(ctx, stored.ID)
+	if err != nil {
 		return TokenPair{}, err
+	}
+	if rowsAffected == 0 {
+		return TokenPair{}, ErrInvalidRefreshToken
 	}
 	user, err := s.repo.GetUserByID(ctx, stored.UserID)
 	if err != nil {
@@ -91,7 +98,8 @@ func (s *AuthService) Logout(ctx context.Context, refreshToken string) error {
 		}
 		return err
 	}
-	return s.repo.RevokeRefreshToken(ctx, stored.ID)
+	_, err = s.repo.RevokeRefreshToken(ctx, stored.ID)
+	return err
 }
 
 type InviteResult struct {

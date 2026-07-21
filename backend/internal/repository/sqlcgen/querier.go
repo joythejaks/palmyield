@@ -18,7 +18,7 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserByIdentifier(ctx context.Context, email pgtype.Text) (User, error)
-	RevokeRefreshToken(ctx context.Context, id pgtype.UUID) error
+	RevokeRefreshToken(ctx context.Context, id pgtype.UUID) (int64, error)
 	UpdateUserStatus(ctx context.Context, arg UpdateUserStatusParams) (User, error)
 }
 
